@@ -19,7 +19,8 @@ class SimpleStreamTask extends StreamTask with InitableTask with ClosableTask wi
     val fileName = config.get("filepath.badword")
     abusiveCommentsTopic = config.get("topic.abusivecomments")
     goodCommentsTopic = config.get("topic.goodcomments")
-    for (word <- scala.io.Source.fromFile("fileName").getLines()) abusiveWords += word
+    val stream = getClass.getResourceAsStream(s"/$fileName")
+    for (word <- scala.io.Source.fromInputStream(stream).getLines) abusiveWords += word
   }
 
   override def process(envelope: IncomingMessageEnvelope, collector: MessageCollector, coordinator: TaskCoordinator): Unit = {

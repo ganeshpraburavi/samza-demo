@@ -1,0 +1,38 @@
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+    <appender name="jmx" class="org.apache.samza.logging.log4j.JmxAppender" />
+
+    <appender name="RollingAppender" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${samza.log.dir}/${samza.container.name}.log" />
+        <param name="DatePattern" value="'.'yyyy-MM-dd" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %t %c{1} [%p] %m%n" />
+        </layout>
+    </appender>
+
+    <!-- Used only during debug mode -->
+    <appender name="MaxSizeRollingAppender" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="${samza.log.dir}/${samza.container.name}.log" />
+        <param name="MaxFileSize" value="25MB" />
+        <param name="MaxBackupIndex" value="5" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %t %c{1} [%p] %m%n" />
+        </layout>
+
+    </appender>
+
+    <appender name="SYSLOG" class="org.apache.log4j.net.SyslogAppender">
+        <param name="SyslogHost" value="localhost" />
+        <param name="Header" value="true" />
+        <param name="Facility" value="LOCAL3" />
+        <layout class="org.apache.log4j.EnhancedPatternLayout">
+            <param name="ConversionPattern" value="java %d{ISO8601}{GMT} %p %t %c{1}.%M - %m%n" />
+        </layout>
+    </appender>
+    <root>
+        <priority value="info" />
+        <appender-ref ref="RollingAppender"/>
+        <appender-ref ref="jmx" />
+        <appender-ref ref="SYSLOG" />
+    </root>
+</log4j:configuration>
